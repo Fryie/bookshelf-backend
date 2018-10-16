@@ -52,3 +52,6 @@ gem 'rack-cors'
 
 # isbn
 gem 'isbn'
+
+# file uploads
+gem 'shrine'

@@ -2,6 +2,7 @@ class BooksController < ApplicationController
   AlreadyAvailableError = Class.new StandardError
   InvalidStatusError = Class.new StandardError
   InvalidURLError = Class.new StandardError
+  InvalidFileError = Class.new StandardError
 
   def index
     status_filter = params[:status].presence
@@ -24,9 +25,12 @@ class BooksController < ApplicationController
   def create
     book_id = params[:book_request_id]
     physical_location = params[:physical_location] || ""
+
     if params[:ebook_url].present?
       ebook_url = params[:ebook_url]
       validate_url!(ebook_url)
+    elsif params[:ebook_file].present?
+      ebook_url = upload_ebook!(params[:ebook_file])
     else
       ebook_url = ""
     end
@@ -40,6 +44,11 @@ class BooksController < ApplicationController
     render json: {
       code: "invalid_ebook_url",
       error: "The provided E-Book URL is not valid."
+    }, status: 422
+  rescue InvalidFileError
+    render json: {
+      code: "invalid_ebook_file",
+      error: "The provided E-Book file is not valid."
     }, status: 422
   rescue ActiveRecord::RecordNotFound
     render json: {
@@ -55,6 +64,8 @@ class BooksController < ApplicationController
 
   private
 
+  UPLOADER = Shrine.new(:file_system)
+
   def validate_status!(status)
     Book::VALID_STATUS.include?(status) || raise(InvalidStatusError)
   end
@@ -64,5 +75,15 @@ class BooksController < ApplicationController
     url.kind_of?(URI::HTTP) || url.kind_of?(URI::HTTPS) || raise(InvalidURLError)
   rescue
     raise InvalidURLError
+  end
+
+  def validate_uploaded_file!(file)
+    raise InvalidFileError unless file.is_a?(ActionDispatch::Http::UploadedFile)
+  end
+
+  def upload_ebook!(file)
+    validate_uploaded_file!(file)
+    stored_file = UPLOADER.upload(file)
+    request.base_url + stored_file.url
   end
 end
