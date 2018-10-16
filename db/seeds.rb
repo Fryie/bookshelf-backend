@@ -12,7 +12,8 @@ Book.create(
   author: "Chad Fowler",
   isbn: "978-1934356340",
   image_url: "https://images-na.ssl-images-amazon.com/images/I/51m3yzmDFCL._SX331_BO1,204,203,200_.jpg",
-  status: "available"
+  status: "available",
+  physical_location: "Bookshelf at the entrance"
 )
 
 Book.create(
@@ -20,6 +21,7 @@ Book.create(
   author: "Andrew Hunt, David Thomas, Ward Cunningham",
   isbn: "978-0201616224",
   image_url: "https://images-na.ssl-images-amazon.com/images/I/41BKx1AxQWL._SX396_BO1,204,203,200_.jpg",
+  ebook_url: "http://google.com",
   status: "available"
 )
 
