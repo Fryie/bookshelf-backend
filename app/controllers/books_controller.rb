@@ -2,10 +2,14 @@ class BooksController < ApplicationController
   InvalidStatusError = Class.new StandardError
 
   def index
-    status_filter = params[:status].presence || "available"
-    validate_status(status_filter) || raise(InvalidStatusError)
+    status_filter = params[:status].presence
 
-    books = Book.where(status: status_filter)
+    if status_filter
+      validate_status(status_filter) || raise(InvalidStatusError)
+      books = Book.where(status: status_filter)
+    else
+      books = Book.all
+    end
 
     render json: books.to_json
   rescue InvalidStatusError
