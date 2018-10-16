@@ -49,3 +49,6 @@ gem 'http'
 
 # CORS
 gem 'rack-cors'
+
+# isbn
+gem 'isbn'

@@ -1,6 +1,10 @@
 class BookRequestsController < ApplicationController
+  BookExistsError = Class.new StandardError
+
   def create
-    isbn = params["isbn"]
+    isbn = ISBNService.validate_and_convert_isbn(params["isbn"])
+
+    raise BookExistsError if Book.exists?(isbn: isbn)
 
     book_attributes = ISBNService.lookup(isbn)
     book = Book.create!(
@@ -8,10 +12,26 @@ class BookRequestsController < ApplicationController
     )
 
     render json: book
-  rescue
+  rescue BookExistsError
     render json: {
+      code: "book_exists",
+      error: "Book has already been requested"
+    }, status: 409
+  rescue ISBNService::BookNotFoundError
+    render json: {
+      code: "book_not_found",
       error: "Could not find information for ISBN #{params["isbn"]}"
-    }
+    }, status: 404
+  rescue ISBNService::InvalidApiResponseError
+    render json: {
+      code: "invalid_downstream_api_response",
+      error: "Downstream API fucked up"
+    }, status: 500
+  rescue ISBNService::InvalidISBNError
+    render json: {
+      code: "invalid_isbn_error",
+      error: "Invalid ISBN"
+    }, status: 422
   end
 
   private
