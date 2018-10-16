@@ -28,7 +28,8 @@ Book.create(
   author: "Robert Martin",
   isbn: "978-0132350884",
   image_url: "https://images-na.ssl-images-amazon.com/images/I/515iEcDr1GL._SX385_BO1,204,203,200_.jpg",
-  status: "borrowed"
+  status: "borrowed",
+  borrower: "Markus Saehn"
 )
 
 Book.create(
