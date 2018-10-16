@@ -2,15 +2,10 @@ class BookRequestsController < ApplicationController
   def create
     isbn = params["isbn"]
 
-    lookup_info = find_by_isbn(isbn)
-    book_attributes = lookup_attributes(lookup_info)
-    all_attributes = book_attributes.merge(
-      isbn: isbn,
-      image_url: get_image_url(lookup_info),
-      status: "requested"
+    book_attributes = ISBNService.lookup(isbn)
+    book = Book.create!(
+      book_attributes.merge(status: "requested")
     )
-
-    book = Book.create!(all_attributes)
 
     render json: book
   rescue
