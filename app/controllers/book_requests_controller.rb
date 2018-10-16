@@ -5,6 +5,7 @@ class BookRequestsController < ApplicationController
     lookup_info = find_by_isbn(isbn)
     book_attributes = lookup_attributes(lookup_info)
     all_attributes = book_attributes.merge(
+      isbn: isbn,
       image_url: get_image_url(lookup_info),
       status: "requested"
     )
@@ -35,8 +36,7 @@ class BookRequestsController < ApplicationController
 
     {
       title: parsed_response["title"],
-      author: get_author(parsed_response["authors"], parsed_response["works"]),
-      isbn: parsed_response["isbn_13"][0]
+      author: get_author(parsed_response["authors"], parsed_response["works"])
     }
   end
 
