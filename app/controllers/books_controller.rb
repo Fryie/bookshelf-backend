@@ -14,7 +14,7 @@ class BooksController < ApplicationController
       books = Book.all
     end
 
-    render json: books.to_json
+    render json: books.order(id: :desc).to_json
   rescue InvalidStatusError
     render json: {
       code: "invalid_status_filter",
