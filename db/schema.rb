@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_16_134857) do
+ActiveRecord::Schema.define(version: 2018_10_16_143336) do
 
   create_table "books", force: :cascade do |t|
     t.string "title"
@@ -18,7 +18,9 @@ ActiveRecord::Schema.define(version: 2018_10_16_134857) do
     t.string "isbn"
     t.string "image_url"
     t.string "status"
-    t.string "borrower"
+    t.string "borrower", default: "", null: false
+    t.string "physical_location", default: "", null: false
+    t.string "ebook_url", default: "", null: false
   end
 
 end
